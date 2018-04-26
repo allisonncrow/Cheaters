@@ -1,7 +1,6 @@
 package assignment7;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -13,38 +12,34 @@ public class Main {
         }
         File fileOrig = new File(args[0]);
         int counter = 0;
+        int numWords = 0;
+        int threshold = 0;
+        try {
+            numWords = Integer.parseInt(args[1]);
+            threshold = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter an integer");
+        }
+        Cheaters cheaters = new Cheaters(fileOrig, numWords, threshold, counter);
         for(File file : fileOrig.listFiles()) {
-            int numWords = 0;
-            int threshold = 0;
             try {
-                numWords = Integer.parseInt(args[1]);
-                threshold = Integer.parseInt(args[2]);
-            } catch (NumberFormatException e) {
-                System.out.println("Please enter an integer");
-            }
-
-
-            Cheaters cheaters = new Cheaters(file, numWords, threshold, counter);
-
-            try {
-                file = cheaters.getFile();
-                Scanner sc = new Scanner(cheaters.getFile());
+                BufferedReader in = new BufferedReader(new FileReader(file));
                 ArrayList<String> words = new ArrayList<>();
-                while (sc.hasNextLine()) {
-                    String nextLine = sc.nextLine();
-                    String[] wordsInLine = nextLine.split(" ");
+                for (String x = in.readLine(); x != null; x = in.readLine()) {
+                    String[] wordsInLine = x.split(" ");
                     for (int i = 0; i < wordsInLine.length; i++) {
                         words.add(wordsInLine[i]);
                     }
+
                 }
                 cheaters.cheating(words);
-
-
-            } catch (FileNotFoundException e) {
+            }
+                catch (IOException e) {
                 System.out.println("Please enter a valid directory");
             }
-            counter++;
+            cheaters.counter++;
         }
+        cheaters.countHits(fileOrig.listFiles().length);
 
 
     }
