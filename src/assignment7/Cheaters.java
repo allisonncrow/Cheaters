@@ -31,7 +31,7 @@ public class Cheaters {
         Hashtable<String, Integer> phrases = new Hashtable<>();
         this.hash = phrases;
 
-        for (int i = 0; i < words.size(); i++){
+        for (int i = 0; i < words.size() - numWords - 1; i++){
             String phrase = new String();
             for (int j = 0; j < numWords; j++){
                 phrase += words.get(i+j).toLowerCase();
@@ -41,16 +41,17 @@ public class Cheaters {
             }
             result.add(phrase);
         }
+        hashing(result);
 
     }
 
     public void hashing(ArrayList<String> phrases){
-        LinkedList<Integer> linkedList = new LinkedList<Integer>();
         for(int i = 0; i<phrases.size(); i++) {
             hash.put(phrases.get(i), counter);
         }
         for(String s : hash.keySet()){
-            LinkedList<Integer> = hash.get(s);
+            System.out.println(s + " ");
+            System.out.print(hash.get(s));
         }
     }
 
