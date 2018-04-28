@@ -12,7 +12,7 @@ public class Cheaters {
     private int numWords;
     private int threshold;
     private File file;
-    private Hashtable<String, Integer> hash;
+    private Hashtable<String, LinkedList> hash;
     int counter;
 
     public Cheaters(File file, int words, int threshold, int counter){
@@ -20,6 +20,8 @@ public class Cheaters {
         this.numWords = words;
         this.threshold = threshold;
         this.counter = counter;
+        Hashtable<String, LinkedList> phrases = new Hashtable<>();
+        this.hash = phrases;
     }
 
     public File getFile(){
@@ -28,14 +30,13 @@ public class Cheaters {
 
     public void cheating(ArrayList<String> words){
         ArrayList<String> result = new ArrayList<String>();
-        Hashtable<String, Integer> phrases = new Hashtable<>();
-        this.hash = phrases;
+
 
         for (int i = 0; i < words.size() - numWords - 1; i++){
             String phrase = new String();
             for (int j = 0; j < numWords; j++){
                 phrase += words.get(i+j).toLowerCase();
-                if (i != numWords - 1) {
+                if (j != numWords - 1) {
                     phrase += " ";
                 }
             }
@@ -46,12 +47,49 @@ public class Cheaters {
     }
 
     public void hashing(ArrayList<String> phrases){
+
         for(int i = 0; i<phrases.size(); i++) {
-            hash.put(phrases.get(i), counter);
+            LinkedList<Integer> linkedList = new LinkedList<Integer>();
+
+            if(hash.containsKey(phrases.get(i))){
+                linkedList = hash.get(phrases.get(i));
+                linkedList.add(counter);
+                hash.replace(phrases.get(i), linkedList);
+            }
+            else {
+                linkedList.add(counter);
+                hash.put(phrases.get(i), linkedList);
+            }
         }
-        for(String s : hash.keySet()){
-            System.out.println(s + " ");
-            System.out.print(hash.get(s));
+
+    }
+
+    public void countHits(int n){
+        int[][] arr = new int[n][n];
+        for(String s: hash.keySet()){
+            LinkedList<Integer> linkedList = new LinkedList<Integer>();
+            linkedList = hash.get(s);
+            for(int i = 0; i < linkedList.size(); i++){
+                for(int j = 0; j<linkedList.size(); j++){
+                    int x = linkedList.get(i);
+                    int y = linkedList.get(j);
+                    int hits = arr[x][y];
+                    hits++;
+                    arr[x][y] = hits;
+                }
+            }
+        }
+
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < i; j++){
+                if(arr[i][j] > threshold) {
+                    System.out.println("Files " + i + " and " + j + " cheated!");
+                    System.out.print(arr[i][j]);
+                    System.out.print(" ");
+                    System.out.print("\n");
+                }
+            }
+
         }
     }
 
