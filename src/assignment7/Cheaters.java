@@ -14,6 +14,7 @@ public class Cheaters {
     private File file;
     private Hashtable<String, LinkedList> hash;
     int counter;
+    public int[][] array;
 
     public Cheaters(File file, int words, int threshold, int counter){
         this.file = file;
@@ -24,9 +25,7 @@ public class Cheaters {
         this.hash = phrases;
     }
 
-    public File getFile(){
-        return this.file;
-    }
+
 
     public void cheating(ArrayList<String> words){
         ArrayList<String> result = new ArrayList<String>();
@@ -64,7 +63,7 @@ public class Cheaters {
 
     }
 
-    public void countHits(int n){
+    public int[][] countHits(int n){
         int[][] arr = new int[n][n];
         for(String s: hash.keySet()){
             LinkedList<Integer> linkedList = new LinkedList<Integer>();
@@ -79,18 +78,27 @@ public class Cheaters {
                 }
             }
         }
+        this.array = arr;
+        ArrayList<String> files = getFile();
 
         for(int i = 0; i < n; i++){
             for(int j = 0; j < i; j++){
                 if(arr[i][j] > threshold) {
-                    System.out.println("Files " + i + " and " + j + " cheated!");
-                    System.out.print(arr[i][j]);
-                    System.out.print(" ");
-                    System.out.print("\n");
+                    System.out.println("Files " + files.get(i) + " and " + files.get(j) + " cheated " + arr[i][j] + " times");
                 }
             }
 
         }
+        return arr;
+    }
+
+    public ArrayList<String> getFile(){
+        ArrayList<String> array = new ArrayList<>();
+        File fileOrig = file;
+        for(File file : file.listFiles()){
+            array.add(file.toString().substring(fileOrig.toString().length() + 1));
+        }
+        return array;
     }
 
 
